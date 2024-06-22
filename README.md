@@ -2,7 +2,7 @@
 
 ![compare](png/compare.png)
 
-[preview demo]([https://www.google.com](https://667706da235f9bc3fba5c1e6--sunny-youtiao-66e4d5.netlify.app/optimized.html)
+[preview demo]([https://www.google.com](https://667706da235f9bc3fba5c1e6--sunny-youtiao-66e4d5.netlify.app/optimized.html))
 
 This project explores techniques to optimize JavaScript rendering algorithms for massive datasets (up to 1 million objects) by leveraging the efficiency of Uint8Array iteration. This approach significantly reduces rendering lag and improves user experience in web applications with large amounts of visual data.
 
