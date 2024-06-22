@@ -1,5 +1,7 @@
 # Description
 
+![compare](png/compare.png)
+
 This project explores techniques to optimize JavaScript rendering algorithms for massive datasets (up to 1 million objects) by leveraging the efficiency of Uint8Array iteration. This approach significantly reduces rendering lag and improves user experience in web applications with large amounts of visual data.
 
 # How does it work
@@ -20,4 +22,4 @@ By creating object in 16bit binary format (Uint16Array) When the javascript engi
 This project utilizes Uint16Array data structures to store object data. Uint16Arrays offer efficient memory access patterns due to their fixed-size, single-byte elements. This characteristic significantly improves iteration performance compared to traditional JavaScript objects, especially when dealing with large datasets.
 The Render algorithms would process all object data stored in the Uint16Array and convert it into a bitmap format for efficient manipulation.
 
-![objectDataStructure](png/bitmap.png)
+![algorithms](png/bitmap.png)
