@@ -18,3 +18,9 @@ By creating object in 16bit binary format (Uint16Array) When the javascript engi
 ![objectDataStructure](png/objectDataStructure.png)
 
 This project utilizes Uint16Array data structures to store object data. Uint16Arrays offer efficient memory access patterns due to their fixed-size, single-byte elements. This characteristic significantly improves iteration performance compared to traditional JavaScript objects, especially when dealing with large datasets.
+
+# Rendering algorithms
+
+Render algorithms process all object data stored in the Uint16Array and convert it into a bitmap format for efficient manipulation.
+
+![objectDataStructure](png/bitmap.png)
