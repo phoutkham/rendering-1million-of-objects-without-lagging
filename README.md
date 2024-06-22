@@ -15,7 +15,7 @@ By creating object in 16bit binary format (Uint16Array) When the javascript engi
 - SIMD (Single Instruction, Multiple Data): Processing multiple elements simultaneously can be much faster on modern CPUs. Uint16Arrays are ideal for SIMD operations because all elements are the same size and type.
 - Memory Access Patterns: Knowing the data type and fixed size helps the engine predict memory access patterns, leading to more efficient memory management.
 
-# Render algorithms
+# Rendering algorithms
 
 ![objectDataStructure](png/objectDataStructure.png)
 
