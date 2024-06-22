@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+  <h2>Basic rendering algorithm</h2>
+  <span>Numbers of object to render: </span>
+  <input id="objectNumbers" type="text" value="" />
+  <button onclick="window.location.assign('?numbers='+document.getElementById('objectNumbers').value)">update</button>
+  <br>
+  <span>FPS: </span>
+  <span id="fps">0</span>
+  <br>
+  <canvas id="canvas" width="500" height="500"></canvas>
+  <br>
+  <a href="/index5-c.html">See optimized rendering algorithm version</a>
+</body>
+<script type="module">
+
+  import { fpsCounter, getRandomInt, colors, parms } from "./utils.js";
+
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  document.getElementById('objectNumbers').value = parms();
+
+  const allObjects = [];
+
+  class object {
+    constructor(x, y, delta_x, delta_y, color) {
+      this.x = x;
+      this.y = y;
+      this.width = 1;
+      this.height = 1;
+      this.delta_x = delta_x;
+      this.delta_y = delta_y;
+      this.color = color;
+    }
+  }
+
+  function draw(object) {
+
+    if(object.y > canvas.height || object.y < 0) {
+      object.delta_y = object.delta_y * -1;
+    }
+    else if (object.x > canvas.width || object.x < 0) {
+      object.delta_x = object.delta_x * -1;
+    }
+
+    object.y += object.delta_y;
+    object.x += object.delta_x;
+
+    ctx.fillStyle = colors[object.color];
+    ctx.fillRect(object.x, object.y, object.width, object.height);
+
+  }
+
+  function render() {
+    /* clear canvas */
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    /* draw every objects */
+    for (const object of allObjects) {
+      draw(object);
+    }
+
+    /* render next frame */
+    window.fps += 1;
+    requestAnimationFrame(render);
+  }
+
+  /* create objects by given numbers */
+  for (let i = 0; i < parms(); i++) {
+
+    const x = getRandomInt(0, canvas.width);
+    const y = getRandomInt(0, canvas.height);
+
+    const delta_x = getRandomInt(-2, 2) || getRandomInt(-2, 2) || getRandomInt(-2, 2);
+    const delta_y = getRandomInt(-2, 2) || getRandomInt(-2, 2) || getRandomInt(-2, 2);
+
+    const color = getRandomInt(0, colors.length-1);
+
+    const _object = new object(x, y, delta_x, delta_y, color);
+
+    allObjects.push(_object);
+
+  }
+
+  /* render */
+  requestAnimationFrame(render);
+
+  /* fps counter function */
+  fpsCounter();
+
+</script>
+</html>

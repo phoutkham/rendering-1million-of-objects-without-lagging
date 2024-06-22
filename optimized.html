@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>  
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+  <h2>Optimized rendering algorithm</h2>
+  <span>Numbers of object to render: </span>
+  <input id="objectNumbers" type="text" value="" />
+  <button onclick="window.location.assign('?numbers='+document.getElementById('objectNumbers').value)">update</button>
+  <br>
+  <span>FPS: </span>
+  <span id="fps">0</span>
+  <br>
+  <canvas id="canvas" width="500" height="500"></canvas>
+  <br>
+  <a href="/index.html">See basic rendering algorithm version</a>
+</body>
+<script type="module">
+
+  import { fpsCounter, invert, getRandomInt, _getRandomInt, _colors, parms } from "./utils.js";
+
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const imageData = ctx.createImageData(canvas.width, canvas.height);
+
+  document.getElementById('objectNumbers').value = parms();
+
+  const config = {
+    width: canvas.width,
+    height: canvas.height,
+    graphicMemorySize: canvas.width * canvas.height,
+    objectSizeIn16bit: 5,
+    numberOfObject: parms()
+  }
+
+  /* allocate 16bit memory for the objects */
+  const objectsMemory = new Uint16Array(config.numberOfObject * config.objectSizeIn16bit);
+
+  /* allocate 8bit memory for the graphic */
+  let graphicMemory = new Uint8Array(config.graphicMemorySize);
+
+
+  /* main graphic rendering function */
+  function render() {
+
+    /* allocate 8bit memory for the graphic */
+    graphicMemory = new Uint8Array(config.graphicMemorySize);
+
+    /* update all objects position */
+    for (let i = 0; i < (config.numberOfObject * config.objectSizeIn16bit); i += config.objectSizeIn16bit) {
+      const offsetX = i;
+      const offsetY = i+1;
+      const offsetDeltaX = i+2;
+      const offsetDeltaY = i+3;
+      const offsetColor = i+4;
+
+      objectsMemory[offsetX] = objectsMemory[offsetX] + objectsMemory[offsetDeltaX] -2;
+      objectsMemory[offsetY] = objectsMemory[offsetY] + objectsMemory[offsetDeltaY] -2;
+
+      if((objectsMemory[offsetY] - 100) > config.height-1) {
+        objectsMemory[offsetY] = config.height-1 + 100;
+        objectsMemory[offsetDeltaY] = invert(objectsMemory[offsetDeltaY]);
+      }
+      if ((objectsMemory[offsetX] - 100) > config.width-1) {
+        objectsMemory[offsetX] = config.width-1 + 100;
+        objectsMemory[offsetDeltaX] = invert(objectsMemory[offsetDeltaX]);
+      }
+      if((objectsMemory[offsetX] - 100) < 0) {
+        objectsMemory[offsetX] = 100;
+        objectsMemory[offsetDeltaX] = invert(objectsMemory[offsetDeltaX]);
+      }
+      if((objectsMemory[offsetY] - 100) < 0) {
+        objectsMemory[offsetY] = 100;
+        objectsMemory[offsetDeltaY] = invert(objectsMemory[offsetDeltaY]);
+      }
+
+      const offset = (config.width * (objectsMemory[offsetY] - 100)) + (objectsMemory[offsetX] - 100) - 1;
+
+      graphicMemory[offset] = objectsMemory[offsetColor];
+
+    }
+
+    /* create image from stored data in memory */
+    for (let i = 0; i < graphicMemory.length - 1; i++) {
+
+      const color = graphicMemory[i];
+
+      const offset = i * 4;
+
+      imageData.data[offset] = _colors[color][0];
+      imageData.data[offset+1] = _colors[color][1];
+      imageData.data[offset+2] = _colors[color][2];
+      imageData.data[offset+3] = 255;
+
+    }
+
+    /* set image to the canvas */
+    ctx.putImageData(imageData, 0, 0);
+
+    /* render next frame and update fps */
+    requestAnimationFrame(render);
+    window.fps += 1;
+  }
+
+  /* create object by given numbers (object stored in 16bit format) */
+  for (let i = 0; i < (config.numberOfObject * config.objectSizeIn16bit); i += config.objectSizeIn16bit) {
+
+    const x = getRandomInt(0, canvas.width) + 100;
+    const y = getRandomInt(0, canvas.height) + 100;
+
+    const delta_x = _getRandomInt(0, 4);
+    const delta_y = _getRandomInt(0, 4);
+
+    const color = getRandomInt(0, _colors.length-1);
+
+    objectsMemory.set([x], i);
+    objectsMemory.set([y], i+1);
+    objectsMemory.set([delta_x], i+2);
+    objectsMemory.set([delta_y], i+3);
+    objectsMemory.set([color], i+4);
+
+  }
+
+  /* render */
+  requestAnimationFrame(render);
+
+  /* fps counter function */
+  fpsCounter();
+
+</script>
+</html>
